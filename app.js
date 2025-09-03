@@ -193,6 +193,7 @@ let currentSchedule = [];
 let currentScenarioId = null;
 let loadedScenarioData = null;
 let amortizationChart = null;
+let loanStartDate = null;
 
 /////////////////////// NEW: Chart Functions ///////////////////////
 
@@ -586,10 +587,16 @@ function saveScenario() {
       currentScenarioIdEl.value = currentScenarioId;
     }
 
+    // If not already set, fix loanStartDate at first save
+    if (!loanStartDate) {
+      loanStartDate = new Date().toISOString();
+    }
+
     const scenarioData = {
       id: currentScenarioId,
       timestamp: new Date().toISOString(),
       version: "2.1", // Updated version for chart support
+      loanStartDate: loanStartDate, // NEW: persist start date
       ...collectScenarioData(),
     };
 
@@ -697,6 +704,11 @@ function loadScenario() {
     currentScenarioId = loadedScenarioData.id;
     currentScenarioIdEl.value = currentScenarioId;
 
+    // Restore loan start date if present in JSON
+    loanStartDate = loadedScenarioData.loanStartDate
+      ? new Date(loadedScenarioData.loanStartDate)
+      : new Date();
+
     generateBaseline();
 
     setTimeout(() => {
@@ -787,7 +799,7 @@ function generateBaseline() {
   const rows = [];
   let balance = P;
   let totalInterest = 0;
-  const startDate = new Date();
+  const startDate = loanStartDate ? new Date(loanStartDate) : new Date();
 
   for (let i = 1; i <= n; i++) {
     const interest = balance * monthlyRate;
@@ -883,7 +895,7 @@ function renderSchedule(schedule) {
 function applyUserChanges() {
   const P = Number(loanAmountEl.value) || 0;
   const originalTenure = parseInt(tenureEl.value) || 0;
-  const startDate = new Date();
+  const startDate = loanStartDate ? new Date(loanStartDate) : new Date();
 
   // Read user inputs
   const disbursementsMap = new Map();
@@ -1253,7 +1265,33 @@ function updateStatsBar() {
   currentRoiEl.textContent = `${currentROI}%`;
   // Outstanding should be the balance from the first month (current outstanding)
   currentOutstandingEl.textContent = `₹${toCurrency(firstMonth.balance)}`;
-  monthsRemainingEl.textContent = currentSchedule.length.toString();
+  // Format loan start month (use saved loanStartDate if available)
+  let startLabel = "";
+  if (loanStartDate) {
+    startLabel = new Date(loanStartDate).toLocaleDateString("en-GB", {
+      month: "long",
+      year: "numeric",
+    });
+  }
+
+  if (startLabel) {
+    // Format short month + year
+    const shortLabel = new Date(loanStartDate).toLocaleDateString("en-GB", {
+      month: "short",
+      year: "numeric",
+    });
+
+    monthsRemainingEl.innerHTML = `
+    <div style="display:flex; align-items:center; justify-content:center; gap:8px; font-weight:600;">
+      <span>${shortLabel}</span>
+      <span style="color:#999;">|</span>
+      <span>${currentSchedule.length} Left</span>
+    </div>
+  `;
+  } else {
+    monthsRemainingEl.textContent = `${currentSchedule.length} Left`;
+  }
+
   updateCompletionProgress();
 }
 
@@ -1532,6 +1570,14 @@ Generated: ${new Date().toLocaleString()}
 ${currentScenarioId ? `Scenario ID: ${currentScenarioId}` : ""}
 
 LOAN DETAILS:
+• Loan Start Date: ${
+    loanStartDate
+      ? new Date(loanStartDate).toLocaleDateString("en-GB", {
+          month: "short",
+          year: "numeric",
+        })
+      : "Not set"
+  }
 • Principal Amount: ₹${toCurrency(loanAmount)}
 • Initial Interest Rate: ${roiStart}% per annum
 • Original Tenure: ${tenure} months
@@ -1563,12 +1609,8 @@ STRATEGY IMPACT:
 }
 
 // Add summary report button
-const summaryBtn = document.createElement("button");
-summaryBtn.className = "btn btn-outline-info";
-summaryBtn.textContent = "Summary Report";
-summaryBtn.title = "Generate summary report";
+const summaryBtn = document.getElementById("summaryReportBtn");
 summaryBtn.addEventListener("click", generateSummaryReport);
-document.querySelector(".floating-buttons").appendChild(summaryBtn);
 
 // Local Storage for User Preferences (not scenario data)
 function saveUserPreferences() {
