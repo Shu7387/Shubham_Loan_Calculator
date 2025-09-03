@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Advanced Loan Calculator - Professional Grade</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #333;
+        line-height: 1.6;
+      }
+
+      .pamphlet {
+        max-width: 1200px;
+        margin: 20px auto;
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      }
+
+      .header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        padding: 40px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .header::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.1) 0%,
+          transparent 70%
+        );
+        animation: shimmer 3s ease-in-out infinite;
+      }
+
+      @keyframes shimmer {
+        0%,
+        100% {
+          transform: rotate(0deg);
+        }
+        50% {
+          transform: rotate(180deg);
+        }
+      }
+
+      .header h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        position: relative;
+        z-index: 1;
+      }
+
+      .header .subtitle {
+        font-size: 1.4rem;
+        opacity: 0.9;
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .header .tagline {
+        font-size: 1.1rem;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 15px 30px;
+        border-radius: 50px;
+        display: inline-block;
+        backdrop-filter: blur(10px);
+        position: relative;
+        z-index: 1;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 30px;
+        padding: 50px;
+        background: #f8f9fa;
+      }
+
+      .feature-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        border-left: 5px solid #667eea;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .feature-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+      }
+
+      .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        display: block;
+        text-align: center;
+      }
+
+      .feature-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 15px;
+        text-align: center;
+      }
+
+      .feature-list {
+        list-style: none;
+      }
+
+      .feature-list li {
+        padding: 8px 0;
+        border-bottom: 1px solid #ecf0f1;
+        position: relative;
+        padding-left: 30px;
+      }
+
+      .feature-list li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #27ae60;
+        font-weight: bold;
+        font-size: 1.2rem;
+      }
+
+      .feature-list li:last-child {
+        border-bottom: none;
+      }
+
+      .pricing-section {
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        color: white;
+        padding: 60px 50px;
+        text-align: center;
+      }
+
+      .pricing-title {
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+        font-weight: 700;
+      }
+
+      .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        margin-top: 40px;
+      }
+
+      .pricing-card {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 40px 30px;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .pricing-card:hover {
+        transform: scale(1.05);
+        border-color: #667eea;
+      }
+
+      .pricing-card.featured {
+        border-color: #f39c12;
+        background: rgba(243, 156, 18, 0.2);
+      }
+
+      .pricing-card h3 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+      }
+
+      .price {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #f39c12;
+        margin-bottom: 20px;
+      }
+
+      .contact-section {
+        background: white;
+        padding: 50px;
+        text-align: center;
+      }
+
+      .contact-title {
+        font-size: 2.5rem;
+        color: #2c3e50;
+        margin-bottom: 30px;
+        font-weight: 700;
+      }
+
+      .contact-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        margin-top: 40px;
+      }
+
+      .contact-card {
+        padding: 30px;
+        border-radius: 15px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .contact-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+      }
+
+      .benefits {
+        background: #ecf0f1;
+        padding: 50px;
+      }
+
+      .benefits-title {
+        text-align: center;
+        font-size: 2.5rem;
+        color: #2c3e50;
+        margin-bottom: 40px;
+        font-weight: 700;
+      }
+
+      .benefits-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+      }
+
+      .benefit-item {
+        text-align: center;
+        padding: 30px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .benefit-item .icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        display: block;
+      }
+
+      .cta-button {
+        display: inline-block;
+        padding: 15px 40px;
+        background: linear-gradient(135deg, #f39c12, #e67e22);
+        color: white;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+        margin: 20px 10px;
+      }
+
+      .cta-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(243, 156, 18, 0.3);
+      }
+
+      @media (max-width: 768px) {
+        .features-grid,
+        .pricing-section,
+        .contact-section,
+        .benefits {
+          padding: 30px 20px;
+        }
+
+        .header h1 {
+          font-size: 2.5rem;
+        }
+
+        .header .subtitle {
+          font-size: 1.2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="pamphlet">
+      <!-- Header Section -->
+      <div class="header">
+        <h1>🏦 ADVANCED LOAN CALCULATOR</h1>
+        <p class="subtitle">
+          Professional-Grade Loan Amortization & Scenario Planning Tool
+        </p>
+        <p class="tagline">
+          Transform Your Lending Business with Precision & Intelligence
+        </p>
+      </div>
+
+      <!-- Features Grid -->
+      <div class="features-grid">
+        <!-- Core Calculation Features -->
+        <div class="feature-card">
+          <div class="feature-icon">🧮</div>
+          <h3 class="feature-title">Advanced Calculations</h3>
+          <ul class="feature-list">
+            <li>RBI-Approved Banking Formulas</li>
+            <li>Precise EMI Calculations</li>
+            <li>Real-time Number to Words Conversion</li>
+            <li>Interest Rate Validation (0-50%)</li>
+            <li>Flexible Tenure Options</li>
+            <li>Zero Interest Rate Handling</li>
+            <li>Mathematical Accuracy Guaranteed</li>
+          </ul>
+        </div>
+
+        <!-- Scenario Planning -->
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3 class="feature-title">Scenario Planning</h3>
+          <ul class="feature-list">
+            <li>Multiple Disbursements Support</li>
+            <li>Prepayment Impact Analysis</li>
+            <li>Interest Rate Change Modeling</li>
+            <li>Combined Transaction Handling</li>
+            <li>Month-by-Month Adjustments</li>
+            <li>Real-time Recalculation</li>
+            <li>What-if Analysis Tools</li>
+          </ul>
+        </div>
+
+        <!-- Professional Reporting -->
+        <div class="feature-card">
+          <div class="feature-icon">📋</div>
+          <h3 class="feature-title">Professional Reports</h3>
+          <ul class="feature-list">
+            <li>Detailed Amortization Schedules</li>
+            <li>Interest Savings Calculator</li>
+            <li>Completion Date Tracking</li>
+            <li>CSV Export for Analysis</li>
+            <li>Executive Summary Reports</li>
+            <li>Professional Documentation</li>
+            <li>Client-Ready Presentations</li>
+          </ul>
+        </div>
+
+        <!-- Data Management -->
+        <div class="feature-card">
+          <div class="feature-icon">💾</div>
+          <h3 class="feature-title">Data Management</h3>
+          <ul class="feature-list">
+            <li>Save Scenarios as JSON Files</li>
+            <li>Load Scenarios for Comparison</li>
+            <li>Scenario Versioning with Timestamps</li>
+            <li>Auto-validation of Inputs</li>
+            <li>Backup & Restore Capabilities</li>
+            <li>Data Integrity Checks</li>
+            <li>Cross-Platform Compatibility</li>
+          </ul>
+        </div>
+
+        <!-- User Interface -->
+        <div class="feature-card">
+          <div class="feature-icon">🎨</div>
+          <h3 class="feature-title">User Experience</h3>
+          <ul class="feature-list">
+            <li>Intuitive Interactive Interface</li>
+            <li>Real-time Visual Updates</li>
+            <li>Color-coded Result Display</li>
+            <li>Responsive Design (Mobile-Ready)</li>
+            <li>Smart Input Validation</li>
+            <li>Auto-save Preferences</li>
+            <li>Professional Visual Design</li>
+          </ul>
+        </div>
+
+        <!-- Business Applications -->
+        <div class="feature-card">
+          <div class="feature-icon">🏢</div>
+          <h3 class="feature-title">Business Applications</h3>
+          <ul class="feature-list">
+            <li>Home Loan Planning</li>
+            <li>Business Loan Analysis</li>
+            <li>Personal Finance Management</li>
+            <li>Construction Financing</li>
+            <li>Equipment Purchase Planning</li>
+            <li>Debt Consolidation Studies</li>
+            <li>Investment vs Prepayment Analysis</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Benefits Section -->
+      <div class="benefits">
+        <h2 class="benefits-title">Why Choose Our Advanced Loan Calculator?</h2>
+        <div class="benefits-grid">
+          <div class="benefit-item">
+            <span class="icon">⚡</span>
+            <h3>Lightning Fast</h3>
+            <p>
+              Instant calculations with real-time updates. No waiting, no delays
+              - see results as you type.
+            </p>
+          </div>
+          <div class="benefit-item">
+            <span class="icon">🎯</span>
+            <h3>Precision Accuracy</h3>
+            <p>
+              Bank-grade calculations following RBI standards. Every penny
+              accounted for with mathematical precision.
+            </p>
+          </div>
+          <div class="benefit-item">
+            <span class="icon">🔒</span>
+            <h3>Data Security</h3>
+            <p>
+              All calculations happen locally. Your financial data never leaves
+              your device - complete privacy guaranteed.
+            </p>
+          </div>
+          <div class="benefit-item">
+            <span class="icon">📱</span>
+            <h3>Any Device</h3>
+            <p>
+              Works seamlessly on desktop, tablet, and mobile. Take your
+              calculations anywhere, anytime.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pricing Section -->
+      <div class="pricing-section">
+        <h2 class="pricing-title">🎯 Investment Options</h2>
+        <p style="font-size: 1.2rem; opacity: 0.9">
+          Choose the perfect solution for your business needs
+        </p>
+
+        <div class="pricing-grid">
+          <div class="pricing-card">
+            <h3>Individual License</h3>
+            <div class="price">₹9,999</div>
+            <p>Perfect for Financial Advisors & Individual Professionals</p>
+            <ul style="text-align: left; margin-top: 20px">
+              <li>✓ Single User License</li>
+              <li>✓ All Core Features</li>
+              <li>✓ Email Support</li>
+              <li>✓ 1 Year Updates</li>
+            </ul>
+          </div>
+
+          <div class="pricing-card featured">
+            <h3>🌟 Business License</h3>
+            <div class="price">₹24,999</div>
+            <p>Ideal for Banks, NBFC & Financial Institutions</p>
+            <ul style="text-align: left; margin-top: 20px">
+              <li>✓ Up to 10 Users</li>
+              <li>✓ All Premium Features</li>
+              <li>✓ Priority Support</li>
+              <li>✓ Custom Branding</li>
+              <li>✓ 2 Years Updates</li>
+            </ul>
+          </div>
+
+          <div class="pricing-card">
+            <h3>Enterprise License</h3>
+            <div class="price">₹49,999</div>
+            <p>Complete Solution for Large Organizations</p>
+            <ul style="text-align: left; margin-top: 20px">
+              <li>✓ Unlimited Users</li>
+              <li>✓ White-label Solution</li>
+              <li>✓ 24/7 Dedicated Support</li>
+              <li>✓ Custom Development</li>
+              <li>✓ Lifetime Updates</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Section -->
+      <div class="contact-section">
+        <h2 class="contact-title">Ready to Transform Your Loan Business?</h2>
+        <p style="font-size: 1.3rem; color: #7f8c8d; margin-bottom: 30px">
+          Get in touch with our experts today!
+        </p>
+
+        <div>
+          <a href="#" class="cta-button">🚀 Request Demo</a>
+          <a href="#" class="cta-button">💬 Contact Sales</a>
+          <a href="#" class="cta-button">📞 Call Now</a>
+        </div>
+
+        <div class="contact-info">
+          <div class="contact-card">
+            <h3>📧 Email Sales</h3>
+            <p>sales@loancalculator.pro</p>
+            <p>Get detailed quotations and custom pricing</p>
+          </div>
+          <div class="contact-card">
+            <h3>📞 Phone Support</h3>
+            <p>+91-98765-43210</p>
+            <p>Mon-Sat: 9 AM to 6 PM IST</p>
+          </div>
+          <div class="contact-card">
+            <h3>🌐 Online Demo</h3>
+            <p>www.loancalculator.pro/demo</p>
+            <p>Try live demo with sample data</p>
+          </div>
+        </div>
+
+        <div
+          style="
+            margin-top: 40px;
+            padding: 30px;
+            background: #ecf0f1;
+            border-radius: 15px;
+          "
+        >
+          <h3 style="color: #2c3e50; margin-bottom: 15px">
+            🎁 Special Launch Offer
+          </h3>
+          <p style="color: #e74c3c; font-size: 1.3rem; font-weight: 700">
+            Get 30% OFF on all licenses + FREE setup assistance!
+          </p>
+          <p style="color: #7f8c8d">
+            Limited time offer - Valid until December 31, 2024
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
