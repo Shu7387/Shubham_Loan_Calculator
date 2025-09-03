@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Loan Calculator - Smart Financial Planning</title>
+
+    <!-- Inter Variable Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Modern styles -->
+    <link rel="stylesheet" href="modern-styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <!-- Modern Header -->
+      <header class="header">
+        <div class="header-content">
+          <div
+            class="logo"
+            style="display: flex; flex-direction: column; align-items: center"
+          >
+            <div style="font-size: 40px">💰</div>
+            <div style="font-size: 12px; color: #fff; margin-top: 2px">
+              Shubham
+            </div>
+          </div>
+          <div class="header-text">
+            <h1>Loan Calculator</h1>
+            <p>🚀 Faster Repayments, 💵 Smarter Gains</p>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content Grid -->
+      <div class="main-grid">
+        <!-- Left Column: Inputs -->
+        <div class="inputs-column">
+          <!-- Loan Inputs Panel -->
+          <div class="card collapsible-panel">
+            <div class="panel-header" onclick="togglePanel('loan-inputs')">
+              <h3>
+                <svg
+                  class="icon"
+                  width="20"
+                  height="20"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                  />
+                </svg>
+                Loan Inputs
+              </h3>
+              <svg
+                class="chevron"
+                width="20"
+                height="20"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" />
+              </svg>
+            </div>
+            <div id="loan-inputs" class="panel-content">
+              <div class="form-group">
+                <label class="form-label">
+                  <svg
+                    class="label-icon"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"
+                    />
+                  </svg>
+                  Full Loan Amount (₹)
+                </label>
+                <input
+                  id="loanAmount"
+                  data-role="input"
+                  type="number"
+                  class="form-control input-yellow"
+                  value="1000000"
+                  min="0"
+                />
+                <div class="form-text loanAmountWords" id="loanAmountWords">
+                  ₹ 10,00,000 (Ten Lakh Rupees)
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">
+                  <svg
+                    class="label-icon"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M9 11H7v9a2 2 0 002 2h8a2 2 0 002-2V9a2 2 0 00-2-2h-3V5a2 2 0 00-2-2 2 2 0 00-2 2v2H7a2 2 0 00-2 2v2zm0-6a4 4 0 018 0v2H9V5z"
+                    />
+                  </svg>
+                  Interest Rate (annual %)
+                </label>
+                <input
+                  id="roiStart"
+                  data-role="input"
+                  type="number"
+                  step="0.01"
+                  class="form-control input-yellow"
+                  value="7.5"
+                  min="0"
+                />
+                <div class="form-text">Annual interest rate (e.g., 7.5%)</div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">
+                  <svg
+                    class="label-icon"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M9 11H7v9a2 2 0 002 2h8a2 2 0 002-2V9a2 2 0 00-2-2h-3V5a2 2 0 00-2-2 2 2 0 00-2 2v2H7a2 2 0 00-2 2v2zm5-6v2h2a2 2 0 012 2v8a2 2 0 01-2 2H10a2 2 0 01-2-2V9a2 2 0 012-2h2V5a2 2 0 012 0z"
+                    />
+                  </svg>
+                  Tenure (months)
+                </label>
+                <input
+                  id="tenureMonths"
+                  data-role="input"
+                  type="number"
+                  class="form-control input-yellow"
+                  value="60"
+                  min="1"
+                />
+                <div class="form-text">Total loan duration in months</div>
+              </div>
+
+              <div class="button-group">
+                <button id="generateBtn" class="btn btn-primary">
+                  <svg
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+                  </svg>
+                  Generate Schedule
+                </button>
+                <button id="resetBtn" class="btn btn-secondary">
+                  <svg
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+                    />
+                  </svg>
+                  Reset
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Load Scenario Panel -->
+          <div class="card collapsible-panel">
+            <div class="panel-header" onclick="togglePanel('load-scenario')">
+              <h3>
+                <svg
+                  class="icon"
+                  width="20"
+                  height="20"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"
+                  />
+                </svg>
+                Load Saved Scenario
+              </h3>
+              <svg
+                class="chevron"
+                width="20"
+                height="20"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" />
+              </svg>
+            </div>
+            <div id="load-scenario" class="panel-content collapsed">
+              <div class="form-group">
+                <label class="form-label">Upload Saved File</label>
+                <div class="file-upload-area">
+                  <input id="loadFileInput" type="file" accept=".json" />
+                  <div class="file-upload-text">
+                    <svg
+                      width="24"
+                      height="24"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"
+                      />
+                    </svg>
+                    <span>Choose scenario file or drag & drop</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Loaded Scenario ID</label>
+                <input
+                  id="loadedScenarioId"
+                  type="text"
+                  class="form-control readonly-grey"
+                  value="None loaded"
+                  readonly
+                />
+              </div>
+
+              <button id="loadScenarioBtn" class="btn btn-secondary" disabled>
+                <svg
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                </svg>
+                Load Selected Scenario
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Summary -->
+        <div class="summary-column">
+          <div class="card summary-card">
+            <div class="card-header">
+              <h3>
+                <svg
+                  class="icon"
+                  width="20"
+                  height="20"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"
+                  />
+                </svg>
+                Financial Summary
+              </h3>
+              <div class="progress-ring">
+                <div class="progress-value" id="completionProgress">0%</div>
+              </div>
+            </div>
+
+            <div class="metrics-grid">
+              <div class="metric-item positive">
+                <div class="metric-icon">
+                  <svg
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M7 14l5-5 5 5z" />
+                  </svg>
+                </div>
+                <div class="metric-content">
+                  <div class="metric-label">Interest Saved (₹)</div>
+                  <input
+                    id="interestSaved"
+                    type="text"
+                    class="form-control readonly-grey metric-value-input"
+                    value="0"
+                    readonly
+                  />
+                  <div class="metric-trend" id="interestSavedPer">
+                    +0% vs original
+                  </div>
+                </div>
+              </div>
+
+              <div class="metric-item">
+                <div class="metric-icon">
+                  <svg
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M9 11H7v9a2 2 0 002 2h8a2 2 0 002-2V9a2 2 0 00-2-2h-3V5a2 2 0 00-2-2 2 2 0 00-2 2v2H7a2 2 0 00-2 2v2z"
+                    />
+                  </svg>
+                </div>
+                <div class="metric-content">
+                  <div class="metric-label">Loan Completion Date</div>
+                  <input
+                    id="completionDate"
+                    type="text"
+                    class="form-control readonly-grey metric-value-input"
+                    value="-"
+                    readonly
+                  />
+                  <div class="metric-trend" id="monthsSaved">On schedule</div>
+                </div>
+              </div>
+
+              <div class="metric-item">
+                <div class="metric-content">
+                  <div class="metric-label">Original Total Interest (₹)</div>
+                  <input
+                    id="origTotalInterest"
+                    type="text"
+                    class="form-control readonly-grey metric-value-input"
+                    value="-"
+                    readonly
+                  />
+                </div>
+              </div>
+
+              <div class="metric-item">
+                <div class="metric-content">
+                  <div class="metric-label">New Total Interest (₹)</div>
+                  <input
+                    id="newTotalInterest"
+                    type="text"
+                    class="form-control readonly-grey metric-value-input"
+                    value="-"
+                    readonly
+                  />
+                </div>
+              </div>
+
+              <div class="metric-item warning">
+                <div class="metric-icon">
+                  <svg
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                    />
+                  </svg>
+                </div>
+                <div class="metric-content">
+                  <div class="metric-label">
+                    Total Additional Disbursements (₹)
+                  </div>
+                  <input
+                    id="totalDisbursements"
+                    type="text"
+                    class="form-control readonly-grey metric-value-input"
+                    value="0"
+                    readonly
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="scenario-info">
+              <div class="form-group">
+                <label class="form-label">Current Scenario</label>
+                <input
+                  id="currentScenarioId"
+                  type="text"
+                  class="form-control readonly-grey scenario-id"
+                  value="Not saved yet"
+                  readonly
+                />
+              </div>
+
+              <button id="saveScenarioBtn" class="btn btn-success full-width">
+                <svg
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M17 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V7l-4-4z"
+                  />
+                </svg>
+                Save This Scenario
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Amortization Schedule -->
+      <div class="card table-card">
+        <div class="card-header">
+          <div class="table-header-content">
+            <h3>
+              <svg
+                class="icon"
+                width="20"
+                height="20"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M3 3v18h18V3H3zm8 16H9v-6h2v6zm0-8H9V7h2v4zm6 8h-2v-6h2v6zm0-8h-2V7h2v4z"
+                />
+              </svg>
+              Amortization Schedule
+            </h3>
+            <div class="table-controls">
+              <button
+                class="btn btn-secondary compact-view"
+                onclick="toggleCompactView()"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  style="margin-right: 4px"
+                >
+                  <path d="M3 4h18v2H3V4zm0 6h18v2H3v-2zm0 6h18v2H3v-2z" />
+                </svg>
+                Compact
+              </button>
+
+              <button class="btn btn-secondary" id="downloadCsv">
+                <svg
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"
+                  />
+                </svg>
+                Download CSV
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Stats Bar -->
+          <div class="stats-bar">
+            <div class="stat-item">
+              <i class="fas fa-wallet stat-icon"></i>
+              <span class="stat-label">Monthly EMI</span>
+              <span class="stat-value" id="monthlyEMI">₹0</span>
+            </div>
+            <div class="stat-item">
+              <i class="fas fa-percent stat-icon"></i>
+              <span class="stat-label">Current ROI</span>
+              <span class="stat-value" id="currentRoi">0</span>
+            </div>
+            <div class="stat-item">
+              <i class="fas fa-university stat-icon"></i>
+              <span class="stat-label">Outstanding Balance</span>
+              <span class="stat-value" id="currentOutstanding">₹0</span>
+            </div>
+            <div class="stat-item">
+              <i class="fas fa-calendar-alt stat-icon"></i>
+              <span class="stat-label">EMI Left</span>
+              <span class="stat-value" id="monthsRemaining">0</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table id="amortTable" class="modern-table">
+            <thead>
+              <tr>
+                <th class="col-narrow">Sr. No.</th>
+                <th class="col-month">Month</th>
+                <th class="col-currency">EMI (₹)</th>
+                <th class="col-currency">Interest Paid (₹)</th>
+                <th class="col-currency">Principal Paid (₹)</th>
+                <th class="col-input">Loan Disbursement (₹)</th>
+                <th class="col-input">Prepayment Amount (₹)</th>
+                <th class="col-input">Change in ROI (%)</th>
+                <th class="col-currency">Outstanding (₹)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Generated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-footer">
+          <div class="table-actions">
+            <button
+              id="applyChanges"
+              class="btn btn-success"
+              style="display: none"
+            >
+              <svg
+                width="16"
+                height="16"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+              </svg>
+              Apply Changes
+            </button>
+          </div>
+
+          <div class="table-info">
+            <p>
+              <strong>Tip:</strong> Prepayments reduce tenure • Disbursements
+              adjust EMI • ROI changes affect future calculations
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Success/Error Messages -->
+      <div id="messageContainer" class="message-container"></div>
+      <div class="scroll-navigation">
+        <button class="scroll-btn" onclick="scrollToTop()" title="Go to top">
+          <svg fill="currentColor" viewBox="0 0 24 24">
+            <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z" />
+          </svg>
+        </button>
+        <button
+          class="scroll-btn"
+          onclick="scrollToBottom()"
+          title="Go to bottom"
+        >
+          <svg fill="currentColor" viewBox="0 0 24 24">
+            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+          </svg>
+        </button>
+      </div>
+    </main>
+
+    <!-- JavaScript -->
+    <script src="app.js"></script>
+  </body>
+</html>
