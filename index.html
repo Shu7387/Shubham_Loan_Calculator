@@ -71,93 +71,134 @@
                 <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" />
               </svg>
             </div>
+
             <div id="loan-inputs" class="panel-content">
-              <div class="form-group">
-                <label class="form-label">
-                  <svg
-                    class="label-icon"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
+              <div class="loan-grid">
+                <!-- Full Loan Amount (existing input preserved) -->
+                <div class="form-group">
+                  <label class="form-label">
+                    <!-- (icon preserved from original label) -->
+                    <svg
+                      class="label-icon"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 ..."
+                      ></path>
+                    </svg>
+                    Full Loan Amount (₹)
+                  </label>
+                  <input
+                    id="loanAmount"
+                    data-role="input"
+                    type="number"
+                    class="form-control input-yellow"
+                    value="1000000"
+                    min="0"
+                  />
+                  <div class="form-text loanAmountWords" id="loanAmountWords">
+                    ₹ 10,00,000 (Ten Lakh Rupees)
+                  </div>
+                </div>
+
+                <!-- Interest Rate (existing input preserved) -->
+                <div class="form-group">
+                  <label class="form-label">
+                    <svg
+                      class="label-icon"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M9 11H7v9a2 2 0 002 2h8a2 2 0 002-2V9a2 2 0 00-2-2h2V5a2 2 0 012 0z"
+                      ></path>
+                    </svg>
+                    Interest Rate (annual %)
+                  </label>
+                  <input
+                    id="roiStart"
+                    data-role="input"
+                    type="number"
+                    step="0.01"
+                    class="form-control input-yellow"
+                    value="7.5"
+                    min="0"
+                  />
+                  <div
+                    class="form-text interestRateWords"
+                    id="interestRateWords"
                   >
-                    <path
-                      d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"
-                    />
-                  </svg>
-                  Full Loan Amount (₹)
-                </label>
-                <input
-                  id="loanAmount"
-                  data-role="input"
-                  type="number"
-                  class="form-control input-yellow"
-                  value="1000000"
-                  min="0"
-                />
-                <div class="form-text loanAmountWords" id="loanAmountWords">
-                  ₹ 10,00,000 (Ten Lakh Rupees)
+                    Annual interest rate (e.g., 7.5%)
+                  </div>
+                </div>
+
+                <!-- Tenure (existing input preserved) -->
+                <div class="form-group">
+                  <label class="form-label">
+                    <svg
+                      class="label-icon"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M9 11H7v9a2 2 0 002 2h8a2 2 0 002-2V9a2 2 0 00-2-2h2V5a2 2 0 012 0z"
+                      ></path>
+                    </svg>
+                    Tenure (months)
+                  </label>
+                  <input
+                    id="tenureMonths"
+                    data-role="input"
+                    type="number"
+                    class="form-control input-yellow"
+                    value="60"
+                    min="1"
+                  />
+                  <div class="form-text tenureYearsWords" id="tenureYearsWords">
+                    ⏰ 5.0 years
+                  </div>
+                </div>
+
+                <!-- Total Loan (NEW readonly field, styled like your inputs) -->
+                <div class="form-group">
+                  <label class="form-label">
+                    <!-- reused icon for consistent look -->
+                    <svg
+                      class="label-icon"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.8-2.15 1.79-.3 3.2-.9 3.2-2.35 0-1.2-1.08-2.2-3.1-2.2-1.86 0-3.2.9-3.2 2.15h-2.2c0-2.6 2.48-4.15 5.4-4.15 3.12 0 5.3 1.6 5.3 3.95 0 2.6-2.12 3.33-4.2 3.65-2.08.33-3.8 1.02-3.8 2.55 0 1.35 1.3 2.35 3.45 2.35 1.9 0 3.35-.86 3.35-2.25h2.15c0 2.6-2.28 4.3-5.5 4.3-3.2 0-5.45-1.66-5.45-4.1 0-2.4 2.08-3.23 4.15-3.6 2.07-.37 3.5-1.07 3.5-2.6 0-1.4-1.2-2.25-3.2-2.25-1.9 0-3.15.86-3.15 2.1h-2.2c0-2.4 2.04-4.1 5.35-4.1 3.36 0 5.85 1.7 5.85 4.35 0 2.45-2.3 3.22-4.55 3.5-2.24.28-3.75.98-3.75 2.45 0 1.4 1.4 2.3 3.45 2.3 2 0 3.6-.95 3.6-2.35h2.15c0 2.55-2.6 4.45-6 4.45-3.7 0-6.2-1.9-6.2-4.5 0-2.5 2.34-3.38 4.6-3.7 2.27-.32 3.9-1.05 3.9-2.6 0-1.56-1.6-2.6-3.9-2.6z"
+                      ></path>
+                    </svg>
+                    Total Loan
+                  </label>
+                  <input
+                    id="totalLoanWithAll"
+                    class="form-control readonly-grey"
+                    readonly
+                    value=""
+                  />
+                  <div class="form-text totalLoanWithAll" id="totalLoanWithAll">
+                    Total payable = Principal + Additional Disbursements +
+                    Interest
+                  </div>
                 </div>
               </div>
 
-              <div class="form-group">
-                <label class="form-label">
-                  <svg
-                    class="label-icon"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M9 11H7v9a2 2 0 002 2h8a2 2 0 002-2V9a2 2 0 00-2-2h-3V5a2 2 0 00-2-2 2 2 0 00-2 2v2H7a2 2 0 00-2 2v2zm0-6a4 4 0 018 0v2H9V5z"
-                    />
-                  </svg>
-                  Interest Rate (annual %)
-                </label>
-                <input
-                  id="roiStart"
-                  data-role="input"
-                  type="number"
-                  step="0.01"
-                  class="form-control input-yellow"
-                  value="7.5"
-                  min="0"
-                />
-                <div class="form-text interestRateWords" id="interestRateWords">
-                  Annual interest rate (e.g., 7.5%)
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label class="form-label">
-                  <svg
-                    class="label-icon"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M9 11H7v9a2 2 0 002 2h8a2 2 0 002-2V9a2 2 0 00-2-2h-3V5a2 2 0 00-2-2 2 2 0 00-2 2v2H7a2 2 0 00-2 2v2zm5-6v2h2a2 2 0 012 2v8a2 2 0 01-2 2H10a2 2 0 01-2-2V9a2 2 0 012-2h2V5a2 2 0 012 0z"
-                    />
-                  </svg>
-                  Tenure (months)
-                </label>
-                <input
-                  id="tenureMonths"
-                  data-role="input"
-                  type="number"
-                  class="form-control input-yellow"
-                  value="60"
-                  min="1"
-                />
-                <div class="form-text tenureYearsWords" id="tenureYearsWords">
-                  ⏰ 5.0 years
-                </div>
-              </div>
-
+              <!-- keep your original buttons / button-group unchanged below the grid -->
               <div class="button-group">
+                <!-- existing generate/reset buttons left exactly as they were -->
                 <button id="generateBtn" class="btn btn-primary">
                   <svg
                     width="16"
@@ -167,9 +208,9 @@
                   >
                     <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
                   </svg>
-                  Generate Schedule
+                  Generate
                 </button>
-                <button id="resetBtn" class="btn btn-secondary">
+                <button id="resetBtn" class="btn btn-muted" type="button">
                   <svg
                     width="16"
                     height="16"
