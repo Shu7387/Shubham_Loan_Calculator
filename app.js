@@ -700,6 +700,7 @@ function loadScenario() {
     tenureEl.value = loadedScenarioData.tenureMonths;
 
     updateLoanAmountWords();
+    updateTenureWords();
 
     currentScenarioId = loadedScenarioData.id;
     currentScenarioIdEl.value = currentScenarioId;
@@ -1239,6 +1240,18 @@ function updateLoanAmountWords() {
   }
 }
 
+function updateTenureWords() {
+  const months = Number(tenureEl.value);
+  const wordsEl = document.querySelector(".tenureYearsWords");
+
+  if (isNaN(months) || months <= 0) {
+    wordsEl.textContent = "Enter tenure in months.";
+  } else {
+    const years = (months / 12).toFixed(1);
+    wordsEl.textContent = `⏰ ${years} years`;
+  }
+}
+
 function updateStatsBar() {
   if (!currentSchedule || currentSchedule.length === 0) {
     monthlyEMIEl.textContent = "₹0";
@@ -1265,29 +1278,30 @@ function updateStatsBar() {
   currentRoiEl.textContent = `${currentROI}%`;
   // Outstanding should be the balance from the first month (current outstanding)
   currentOutstandingEl.textContent = `₹${toCurrency(firstMonth.balance)}`;
-  // Format loan start month (use saved loanStartDate if available)
+
+  // Format loan start month - use today's date if loanStartDate doesn't exist
   let startLabel = "";
-  if (loanStartDate) {
-    startLabel = new Date(loanStartDate).toLocaleDateString("en-GB", {
-      month: "long",
-      year: "numeric",
-    });
-  }
+  let dateToUse = loanStartDate || new Date(); // Use today's date if loanStartDate is null/undefined
+
+  startLabel = dateToUse.toLocaleDateString("en-GB", {
+    month: "long",
+    year: "numeric",
+  });
 
   if (startLabel) {
     // Format short month + year
-    const shortLabel = new Date(loanStartDate).toLocaleDateString("en-GB", {
+    const shortLabel = dateToUse.toLocaleDateString("en-GB", {
       month: "short",
       year: "numeric",
     });
 
     monthsRemainingEl.innerHTML = `
-    <div style="display:flex; align-items:center; justify-content:center; gap:8px; font-weight:600;">
-      <span>${shortLabel}</span>
-      <span style="color:#999;">|</span>
-      <span>${currentSchedule.length} Left</span>
-    </div>
-  `;
+      <div style="display:flex; align-items:center; justify-content:center; gap:8px; font-weight:600;">
+        <span>${shortLabel}</span>
+        <span style="color:#999;">|</span>
+        <span>${currentSchedule.length} Left</span>
+      </div>
+    `;
   } else {
     monthsRemainingEl.textContent = `${currentSchedule.length} Left`;
   }
@@ -1450,6 +1464,8 @@ loadScenarioBtnEl.addEventListener("click", (e) => {
 
 // Update loan amount words dynamically
 loanAmountEl.addEventListener("input", updateLoanAmountWords);
+// Update tenure words dynamically
+tenureEl.addEventListener("input", updateTenureWords);
 
 // Validation for disbursement inputs
 document.addEventListener("blur", (e) => {
@@ -1523,9 +1539,71 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
+// Auto-hide scroll navigation functionality
+let scrollTimeout;
+let isScrolling = false;
+
+function initAutoHideScrollNav() {
+  const scrollNav = document.querySelector(".scroll-navigation");
+  if (!scrollNav) return;
+
+  // Show buttons initially
+  scrollNav.classList.remove("hidden");
+
+  let scrollTimer = null;
+
+  window.addEventListener("scroll", () => {
+    // Clear existing timer
+    if (scrollTimer !== null) {
+      clearTimeout(scrollTimer);
+    }
+
+    // Show buttons while scrolling
+    scrollNav.classList.remove("hidden");
+
+    // Set timer to hide buttons after 2.5 seconds of no scrolling
+    scrollTimer = setTimeout(() => {
+      // Only hide if not at very top or very bottom of page
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight;
+
+      const clientHeight = document.documentElement.clientHeight;
+
+      // Don't hide if at top (first 100px) or bottom (last 100px)
+      if (scrollTop > 100 && scrollTop < scrollHeight - clientHeight - 100) {
+        scrollNav.classList.add("hidden");
+      }
+    }, 2500);
+  });
+
+  // Show buttons when hovering over them
+  scrollNav.addEventListener("mouseenter", () => {
+    if (scrollTimer !== null) {
+      clearTimeout(scrollTimer);
+    }
+    scrollNav.classList.remove("hidden");
+  });
+
+  // Hide buttons after leaving hover (with delay)
+  scrollNav.addEventListener("mouseleave", () => {
+    scrollTimer = setTimeout(() => {
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const clientHeight = document.documentElement.clientHeight;
+
+      if (scrollTop > 100 && scrollTop < scrollHeight - clientHeight - 100) {
+        scrollNav.classList.add("hidden");
+      }
+    }, 1000);
+  });
+}
+
 // Initialize on page load
 window.addEventListener("load", () => {
   loadUserPreferences();
+  updateTenureWords();
   generateBaseline();
 
   // Initialize collapsed panels
@@ -1536,6 +1614,9 @@ window.addEventListener("load", () => {
     input.title =
       "Enter additional loan disbursement for this month. EMI will adjust; tenure will remain unchanged if possible.";
   });
+
+  // Initialize auto-hide scroll navigation
+  initAutoHideScrollNav();
 });
 
 /////////////////////// Summary Report Function ///////////////////////
