@@ -178,6 +178,7 @@ const currentRoiEl = document.getElementById("currentRoi");
 const currentOutstandingEl = document.getElementById("currentOutstanding");
 const monthsRemainingEl = document.getElementById("monthsRemaining");
 const interestSavedPerEl = document.getElementById("interestSavedPer");
+const totalLoanWithAllEl = document.getElementById("totalLoanWithAll");
 
 // Save/Load DOM elements
 const saveScenarioBtnEl = document.getElementById("saveScenarioBtn");
@@ -853,6 +854,7 @@ function generateBaseline() {
 
   updateStatsBar();
   updateCompletionProgress();
+  updateTotalLoanWithAll();
 }
 
 /////////////////////// Render ///////////////////////
@@ -1109,6 +1111,7 @@ function applyUserChanges() {
 
   updateStatsBar();
   updateCompletionProgress();
+  updateTotalLoanWithAll();
 }
 
 /////////////////////// CSV export ///////////////////////
@@ -1157,6 +1160,49 @@ function downloadCSV() {
 }
 
 /////////////////////// Helper Functions ///////////////////////
+/**
+ * Calculate and update the total loan amount with all components
+ * Formula: Principal + Additional Disbursements + New Total Interest
+ */
+function updateTotalLoanWithAll() {
+  const principalAmount = Number(loanAmountEl.value) || 0;
+
+  // Get the new total interest from the input field
+  const newTotalInterest =
+    Number(String(newTotalInterestEl.value).replace(/,/g, "")) || 0;
+
+  // Calculate total disbursements from current schedule
+  let totalDisbursements = 0;
+  if (currentSchedule && currentSchedule.length > 0) {
+    totalDisbursements = currentSchedule.reduce((sum, row) => {
+      return sum + (Number(row.disbursement) || 0);
+    }, 0);
+  }
+
+  // Calculate total payable amount
+  const totalLoanWithAll =
+    principalAmount + totalDisbursements + newTotalInterest;
+
+  // Update the input field
+  if (totalLoanWithAllEl) {
+    totalLoanWithAllEl.value = toCurrency(totalLoanWithAll);
+  }
+
+  // Update the descriptive text
+  const totalLoanWithAllTextEl = document.querySelector(".totalLoanWithAll");
+  if (totalLoanWithAllTextEl) {
+    const principalFormatted = toCurrency(principalAmount);
+    const disbursementsFormatted = toCurrency(totalDisbursements);
+    const interestFormatted = toCurrency(newTotalInterest);
+    const totalFormatted = toCurrency(totalLoanWithAll);
+
+    totalLoanWithAllTextEl.innerHTML = `
+      Total payable = Principal (₹${principalFormatted}) + 
+      Additional Disbursements (₹${disbursementsFormatted}) + 
+      Interest (₹${interestFormatted}) = <strong>₹${totalFormatted}</strong>
+    `;
+  }
+}
 
 function numberToWordsIndian(num) {
   if (!num || num === 0) return "Zero";
@@ -1547,37 +1593,38 @@ function initAutoHideScrollNav() {
   const scrollNav = document.querySelector(".scroll-navigation");
   if (!scrollNav) return;
 
-  // Show buttons initially
-  scrollNav.classList.remove("hidden");
+  // Initially hide the scroll navigation
+  scrollNav.classList.add("hidden");
 
   let scrollTimer = null;
+  let lastScrollTop = 0;
 
   window.addEventListener("scroll", () => {
+    // Get current scroll position
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight;
+    const clientHeight = document.documentElement.clientHeight;
+
+    // Show navigation when scrolling
+    scrollNav.classList.remove("hidden");
+
     // Clear existing timer
     if (scrollTimer !== null) {
       clearTimeout(scrollTimer);
     }
 
-    // Show buttons while scrolling
-    scrollNav.classList.remove("hidden");
-
-    // Set timer to hide buttons after 2.5 seconds of no scrolling
+    // Set timer to hide buttons after 1.5 seconds of no scrolling
     scrollTimer = setTimeout(() => {
-      // Only hide if not at very top or very bottom of page
-      const scrollTop =
-        window.pageYOffset || document.documentElement.scrollTop;
-      const scrollHeight = document.documentElement.scrollHeight;
-
-      const clientHeight = document.documentElement.clientHeight;
-
-      // Don't hide if at top (first 100px) or bottom (last 100px)
+      // Only hide if not at very top (first 100px) or bottom (last 100px)
       if (scrollTop > 100 && scrollTop < scrollHeight - clientHeight - 100) {
         scrollNav.classList.add("hidden");
       }
-    }, 2500);
+    }, 1500);
+
+    lastScrollTop = scrollTop;
   });
 
-  // Show buttons when hovering over them
+  // Show buttons on hover
   scrollNav.addEventListener("mouseenter", () => {
     if (scrollTimer !== null) {
       clearTimeout(scrollTimer);
@@ -1585,18 +1632,15 @@ function initAutoHideScrollNav() {
     scrollNav.classList.remove("hidden");
   });
 
-  // Hide buttons after leaving hover (with delay)
+  // Hide buttons when mouse leaves
   scrollNav.addEventListener("mouseleave", () => {
-    scrollTimer = setTimeout(() => {
-      const scrollTop =
-        window.pageYOffset || document.documentElement.scrollTop;
-      const scrollHeight = document.documentElement.scrollHeight;
-      const clientHeight = document.documentElement.clientHeight;
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight;
+    const clientHeight = document.documentElement.clientHeight;
 
-      if (scrollTop > 100 && scrollTop < scrollHeight - clientHeight - 100) {
-        scrollNav.classList.add("hidden");
-      }
-    }, 1000);
+    if (scrollTop > 100 && scrollTop < scrollHeight - clientHeight - 100) {
+      scrollNav.classList.add("hidden");
+    }
   });
 }
 
