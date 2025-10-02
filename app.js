@@ -86,6 +86,63 @@ function formatMonthYear(date) {
 }
 
 /**
+ * Check if a date matches current month/year
+ */
+function isCurrentMonth(dateStr) {
+  const now = new Date();
+  const checkDate = new Date(dateStr);
+  return (
+    checkDate.getMonth() === now.getMonth() &&
+    checkDate.getFullYear() === now.getFullYear()
+  );
+}
+
+/**
+ * Scroll table to show current month row with 2 previous rows visible
+ */
+function scrollToCurrentMonth() {
+  setTimeout(() => {
+    const currentRow = document.querySelector(
+      ".modern-table tbody tr.current-month"
+    );
+    if (!currentRow) return;
+
+    const tableWrapper = document.querySelector(".table-wrapper");
+    const thead = document.querySelector(".modern-table thead");
+    const tbody = document.querySelector(".modern-table tbody");
+
+    if (!tableWrapper || !thead || !tbody) return;
+
+    // Get the header height
+    const headerHeight = thead.offsetHeight;
+
+    // Get all tbody rows
+    const allRows = Array.from(tbody.querySelectorAll("tr"));
+    const currentRowIndex = allRows.indexOf(currentRow);
+
+    if (currentRowIndex === -1) return;
+
+    // We want to show 2 rows before current month
+    const targetRowIndex = Math.max(0, currentRowIndex - 2);
+    const targetRow = allRows[targetRowIndex];
+
+    if (!targetRow) return;
+
+    // Calculate the exact position we need to scroll to
+    // Get the target row's position relative to the tbody
+    let targetRowTop = 0;
+    for (let i = 0; i < targetRowIndex; i++) {
+      targetRowTop += allRows[i].offsetHeight;
+    }
+
+    // Scroll position accounts for sticky header plus small padding
+    const scrollPosition = targetRowTop - 5;
+
+    tableWrapper.scrollTop = Math.max(0, scrollPosition);
+  }, 1000); // Increased timeout to ensure DOM is fully rendered
+}
+
+/**
  * Simple number to words conversion (basic implementation)
  */
 function convertNumberToWords(num) {
@@ -855,6 +912,7 @@ function generateBaseline() {
   updateStatsBar();
   updateCompletionProgress();
   updateTotalLoanWithAll();
+  scrollToCurrentMonth();
 }
 
 /////////////////////// Render ///////////////////////
@@ -868,6 +926,12 @@ function renderSchedule(schedule) {
 
     if (hasDisbursement) {
       tr.classList.add("has-disbursement");
+    }
+
+    // Highlight current month row
+    const isCurrentMonthRow = isCurrentMonth(row.monthLabel);
+    if (isCurrentMonthRow) {
+      tr.classList.add("current-month");
     }
 
     tr.innerHTML = `
@@ -890,7 +954,9 @@ function renderSchedule(schedule) {
       <td>${toCurrency(row.balance)}</td>
     `;
     amortTableBody.appendChild(tr);
+    // Auto-scroll to current month
   });
+  scrollToCurrentMonth();
 }
 
 /////////////////////// Core apply logic with Disbursement ///////////////////////
@@ -1112,6 +1178,7 @@ function applyUserChanges() {
   updateStatsBar();
   updateCompletionProgress();
   updateTotalLoanWithAll();
+  scrollToCurrentMonth();
 }
 
 /////////////////////// CSV export ///////////////////////
@@ -1326,31 +1393,41 @@ function updateStatsBar() {
   currentOutstandingEl.textContent = `₹${toCurrency(firstMonth.balance)}`;
 
   // Format loan start month - use today's date if loanStartDate doesn't exist
-  let startLabel = "";
-  let dateToUse = loanStartDate || new Date(); // Use today's date if loanStartDate is null/undefined
+  // Calculate EMIs already paid and remaining
+  let emisPaid = 0;
+  let emisLeft = currentSchedule.length;
 
-  startLabel = dateToUse.toLocaleDateString("en-GB", {
-    month: "long",
-    year: "numeric",
-  });
+  if (loanStartDate) {
+    const startDate = new Date(loanStartDate);
+    const today = new Date();
 
-  if (startLabel) {
-    // Format short month + year
-    const shortLabel = dateToUse.toLocaleDateString("en-GB", {
-      month: "short",
-      year: "numeric",
-    });
+    // Calculate months between start date and today
+    const yearsDiff = today.getFullYear() - startDate.getFullYear();
+    const monthsDiff = today.getMonth() - startDate.getMonth();
+    emisPaid = Math.max(0, yearsDiff * 12 + monthsDiff);
 
-    monthsRemainingEl.innerHTML = `
-      <div style="display:flex; align-items:center; justify-content:center; gap:8px; font-weight:600;">
-        <span>${shortLabel}</span>
-        <span style="color:#999;">|</span>
-        <span>${currentSchedule.length} Left</span>
-      </div>
-    `;
-  } else {
-    monthsRemainingEl.textContent = `${currentSchedule.length} Left`;
+    // EMIs left = total schedule length - EMIs already paid
+    emisLeft = Math.max(0, currentSchedule.length - emisPaid);
   }
+
+  // Format loan start month
+  const startLabel = loanStartDate
+    ? new Date(loanStartDate).toLocaleDateString("en-GB", {
+        month: "short",
+        year: "numeric",
+      })
+    : new Date().toLocaleDateString("en-GB", {
+        month: "short",
+        year: "numeric",
+      });
+
+  monthsRemainingEl.innerHTML = `
+    <div style="display:flex; align-items:center; justify-content:center; gap:8px; font-weight:600;">
+      <span>${startLabel}</span>
+      <span style="color:#999;">|</span>
+      <span>${emisLeft} Left</span>
+    </div>
+  `;
 
   updateCompletionProgress();
 }
@@ -1484,6 +1561,9 @@ resetBtn.addEventListener("click", (e) => {
   roiStartEl.value = 7.5;
   tenureEl.value = 60;
   updateLoanAmountWords();
+
+  // ensure a fresh loan uses today's date
+  loanStartDate = new Date().toISOString();
 
   currentScenarioId = null;
   currentScenarioIdEl.value = "Not saved yet";
