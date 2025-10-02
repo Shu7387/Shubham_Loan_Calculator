@@ -920,6 +920,7 @@ body {
   overflow-y: auto;
   max-height: 650px;
   margin-bottom: 1rem;
+  scroll-padding-top: 60px;
 }
 
 .modern-table {
@@ -1621,6 +1622,48 @@ body {
 }
 .shadow-lg {
   box-shadow: var(--shadow-lg);
+}
+
+/* ==================== CURRENT MONTH HIGHLIGHT ==================== */
+.modern-table tbody tr.current-month {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important;
+  border-left: 6px solid #f59e0b;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+  position: relative;
+}
+
+/* Remove the ::before label - it was causing alignment issues */
+
+.modern-table tbody tr.current-month:hover {
+  background: linear-gradient(135deg, #fde68a 0%, #fcd34d 100%) !important;
+  transform: scale(1.01);
+}
+
+/* Alternative: Add a small badge inside the first cell */
+.modern-table tbody tr.current-month td:first-child::after {
+  content: "●";
+  color: #f59e0b;
+  font-size: 18px;
+  margin-left: 6px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Ensure sticky header stays on top */
+.modern-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 /* ==================== CHART HEADER STYLING (WITHOUT HTML CHANGES) ==================== */
 .card-body .d-flex.justify-content-between.align-items-center.mb-3 {
